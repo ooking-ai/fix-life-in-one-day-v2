@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>一天重塑人生 · 精读学习指南 | Fix Your Life in One Day — Bilingual Study Guide</title>
+<meta name="description" content="Dan Koe 长文的精读学习指南：数据驱动版，内容在 data/ JSON 文件中逐章存放，中英对照、词汇讲解、互动练习。">
+<style>
+:root{--bg:#f7f3ea;--paper:#fffdf7;--ink:#1f2937;--muted:#6b7280;--line:#e7dfcd;--accent:#c2410c;--accent2:#0f766e;--gold:#b45309;--card:#ffffff;--soft:#fef3c7;--shadow:0 10px 30px rgba(31,41,55,.08);--radius:18px;--serif:Georgia,"Songti SC","Noto Serif SC",serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.75}
+body.dark{--bg:#111827;--paper:#1f2937;--ink:#f3f4f6;--muted:#9ca3af;--line:#374151;--card:#1e293b;--soft:#78350f;--shadow:0 10px 30px rgba(0,0,0,.4)}
+body.sepia{--bg:#f4ecd8;--paper:#fdf6e3;--ink:#433422;--muted:#8a7a5f;--line:#e3d5b3;--card:#fffaf0;--soft:#fde68a}
+a{color:var(--accent2)}
+img,svg,video{max-width:100%}
+.progress{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--gold));width:0%;z-index:99}
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1080px;margin:auto;padding:10px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:800}.brand small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.topbar .spacer{flex:1}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:13px;font-family:inherit;cursor:pointer}
+.btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+.wrap{max-width:1080px;margin:auto;padding:0 18px 80px}
+.hero{margin:28px 0 18px;background:linear-gradient(135deg,#fff7ed,#ecfdf5);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+body.dark .hero{background:linear-gradient(135deg,#312e81,#134e4a)}
+.hero-in{padding:34px 30px 26px;display:grid;grid-template-columns:1.25fr .75fr;gap:24px}
+@media(max-width:760px){.hero-in{grid-template-columns:1fr}}
+.kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:800}
+h1{font-family:var(--serif);font-size:clamp(32px,5vw,54px);line-height:1.12;margin:10px 0 8px}
+h1 .en{display:block;font-size:.55em;color:var(--muted);font-family:var(--sans);font-weight:600;margin-top:8px;line-height:1.4}
+.lede{font-size:17px;color:#374151}body.dark .lede{color:#d1d5db}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:12.5px}
+.cover-art{border-radius:16px;background:#fff;border:1px solid var(--line);padding:14px}
+.cover-art svg{width:100%;height:auto;display:block}
+.notice{background:#fffbeb;border:1px solid #fcd34d;border-radius:14px;padding:14px 16px;font-size:14px;margin:18px 0}
+body.dark .notice{background:#422006;border-color:#92400e}
+.grid2{display:grid;grid-template-columns:280px 1fr;gap:22px;align-items:start}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+.toc{position:sticky;top:76px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.toc h3{margin:0 0 10px;font-size:14px}
+.toc a{display:flex;justify-content:space-between;gap:8px;text-decoration:none;color:var(--ink);padding:9px 8px;border-radius:10px;font-size:14px}
+.toc a:hover{background:var(--soft)}
+.toc a span.n{color:var(--accent);font-weight:800}
+.toc .pct{font-size:28px;font-weight:800}
+section.chapter{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:26px 26px 22px;margin:0 0 20px;box-shadow:var(--shadow);scroll-margin-top:84px}
+.chapter .num{font-size:12px;letter-spacing:.16em;color:var(--accent);font-weight:800;text-transform:uppercase}
+.chapter h2{font-family:var(--serif);font-size:28px;line-height:1.3;margin:8px 0 4px}
+.chapter h2 .en-title{display:block;font-family:var(--sans);font-size:15px;color:var(--muted);font-weight:600;margin-top:6px}
+.idea{background:linear-gradient(90deg,#fff7ed,transparent);border-left:4px solid var(--accent);padding:12px 14px;border-radius:0 12px 12px 0;margin:16px 0}
+body.dark .idea{background:#292524}
+.idea b{color:var(--accent)}
+.para{margin:14px 0}.para .en{font-size:16.5px}.para .zh{color:#4b5563;font-size:15px;margin-top:4px}body.dark .para .zh{color:#d1d5db}
+body.lang-en .zh{display:none}body.lang-zh .en{display:none}body.lang-zh .en-title{display:none}
+details.vocab{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0;background:var(--card)}
+details.vocab summary{cursor:pointer;font-weight:700;min-height:44px}
+.vocab-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:640px){.vocab-list{grid-template-columns:1fr}}
+.vword{border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;min-height:44px}
+.vword:hover{border-color:var(--accent)}
+.vword .w{font-weight:800}.vword .w i{font-weight:400;color:var(--muted);font-size:13px}
+.vword .def{font-size:13.5px;color:var(--muted);display:none;margin-top:4px}
+.vword.open .def{display:block}
+.vword .ex{font-size:13px;margin-top:6px;display:none}.vword.open .ex{display:block}
+.speak{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:2px 8px;font-size:12px;margin-left:6px;cursor:pointer}
+.quote-card{background:var(--soft);border-radius:14px;padding:14px 16px;margin:14px 0;font-size:14.5px}
+.diagram{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:16px;padding:16px;margin:16px 0}
+body.dark .diagram{background:#0f172a}
+.diagram figcaption{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+.step-list{display:flex;flex-direction:column;gap:8px}
+.step{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;font-size:14px}
+.step b{color:var(--accent2)}
+.level-bar{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0;background:var(--card);font-size:14px}
+.check{display:flex;gap:10px;align-items:flex-start;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:12px 14px;margin-top:16px}
+body.dark .check{background:#052e16}
+.check input{width:20px;height:20px;margin-top:3px;accent-color:var(--accent2)}
+.exercise{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0}
+.exercise h4{margin:0 0 8px}
+textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:14.5px;background:var(--paper);color:var(--ink);resize:vertical}
+.alarm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.alarm-grid{grid-template-columns:1fr 1fr}}
+.alarm{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card)}
+.alarm b{font-size:22px;color:var(--accent2)}
+.flash{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:760px){.flash{grid-template-columns:1fr 1fr}}
+.card3d{perspective:800px;height:150px;cursor:pointer}
+.card3d-in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s}
+.card3d.flipped .card3d-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--card);backface-visibility:hidden}
+.face.back{transform:rotateY(180deg);background:#fff7ed}body.dark .face.back{background:#292524}
+.quiz-q{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.quiz-q button{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-family:inherit;cursor:pointer;min-height:44px}
+.quiz-q button.correct{background:#dcfce7;border-color:#16a34a}.quiz-q button.wrong{background:#fee2e2;border-color:#dc2626}
+footer{color:var(--muted);font-size:13.5px;text-align:center;margin-top:28px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#tocToggle{display:none}
+.loading{padding:40px;text-align:center;color:var(--muted)}
+/* ===== Mobile ===== */
+@media(max-width:860px){
+.topbar-in{padding:8px 12px;gap:8px;flex-wrap:nowrap}
+.brand{font-size:15px;white-space:nowrap;flex:none}.brand small{display:none}.topbar .spacer{display:none}
+.toolbar{flex:1;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.toolbar::-webkit-scrollbar{display:none}
+.toolbar .btn{flex:none;padding:7px 11px;min-height:36px;white-space:nowrap}
+.wrap{padding:0 14px 64px;min-width:0}.grid2{min-width:0}.grid2>*{min-width:0}main{min-width:0}
+.hero{margin:16px 0 14px;border-radius:18px}.hero-in{padding:22px 18px 18px;gap:16px}
+h1{font-size:clamp(28px,8vw,36px)}.lede{font-size:16px}
+.toc{position:static;padding:12px 14px}.toc h3{display:none}
+#tocToggle{display:flex;width:100%;justify-content:space-between;align-items:center;border:0;background:none;font:inherit;font-weight:800;font-size:15px;color:var(--ink);padding:6px 2px;min-height:44px;cursor:pointer}
+.toc .toc-body{display:none}.toc.open .toc-body{display:block}.toc.open #tocToggle .chev{transform:rotate(180deg)}
+.toc a{padding:11px 8px;min-height:44px;align-items:center}
+section.chapter{padding:20px 18px 16px;scroll-margin-top:64px;border-radius:16px;min-width:0;overflow-x:hidden}
+.chapter h2{font-size:23px}.chapter h2 .en-title{font-size:14px}.para .en{font-size:16px}
+.exercise{padding:16px 14px}.btn{min-height:40px}
+.diagram{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:12px;min-width:0;max-width:100%}
+}
+@media(max-width:520px){
+.alarm-grid{grid-template-columns:1fr}.flash{grid-template-columns:1fr}.vocab-list{grid-template-columns:1fr}
+.card3d{height:132px}textarea{font-size:16px}
+}
+</style>
+</head>
+<body class="lang-both">
+<div class="progress" id="progress"></div>
+<header class="topbar"><div class="topbar-in">
+<div class="brand">📖 一天重塑人生<small>精读学习指南 · Bilingual Study Guide</small></div>
+<div class="spacer"></div>
+<div class="toolbar" role="group" aria-label="阅读设置">
+<button class="btn active" data-lang="both">中英对照</button>
+<button class="btn" data-lang="en">English only</button>
+<button class="btn" data-lang="zh">仅中文</button>
+<button class="btn" id="fontMinus" aria-label="减小字号">A−</button>
+<button class="btn" id="fontPlus" aria-label="增大字号">A＋</button>
+<button class="btn" id="themeBtn">🌙 深色 / 米色</button>
+</div></div></header>
+<div class="wrap">
+<div class="hero"><div class="hero-in">
+<div>
+<div class="kicker">Dan Koe · X Article · 2026-01-13 · 精读版 · 数据驱动 v2</div>
+<h1>一天，重塑你的人生<span class="en">Fix Your Life in One Day — a study guide for English learners</span></h1>
+<p class="lede" id="lede"></p>
+<div class="meta" id="chips"></div>
+<p><a class="btn primary" id="sourceLink" href="https://x.com/thedankoe/status/2010751592346030461" target="_blank" rel="noopener">🔗 去 X 读原文 →</a>
+<button class="btn" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">先看怎么用 ↓</button></p>
+<p style="font-size:13px;color:var(--muted)" id="sourceNote"></p>
+</div>
+<div class="cover-art" aria-label="概念插图：从旧身份到新身份">
+<svg viewBox="0 0 320 260" role="img" aria-label="从旧我到新我的阶梯图"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f97316"/><stop offset="1" stop-color="#0f766e"/></linearGradient></defs><rect x="10" y="10" width="300" height="240" rx="16" fill="#fff7ed"/><text x="20" y="38" font-size="15" font-weight="700" fill="#1f2937">OLD YOU → NEW YOU</text><text x="20" y="58" font-size="12" fill="#6b7280">先换身份，再换行动</text><path d="M30 210 L110 160 L190 115 L285 55" stroke="url(#g1)" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="30" cy="210" r="10" fill="#9ca3af"/><circle cx="110" cy="160" r="10" fill="#f59e0b"/><circle cx="190" cy="115" r="10" fill="#0ea5e9"/><circle cx="285" cy="55" r="12" fill="#0f766e"/><text x="18" y="232" font-size="11" fill="#6b7280">旧习惯</text><text x="92" y="182" font-size="11" fill="#6b7280">觉察</text><text x="168" y="137" font-size="11" fill="#6b7280">新目标</text><text x="238" y="38" font-size="11" fill="#0f766e">新身份 ★</text></svg>
+<p style="font-size:12.5px;color:var(--muted);margin:8px 2px 0">图：这本书的核心就一句话 —— <b>先成为那个人，行动会自然跟上。</b></p>
+</div></div></div>
+<div class="notice" id="how"><b>📚 怎么用这本书（30 秒）</b><div id="howList"></div></div>
+<div class="grid2">
+<aside class="toc" aria-label="目录">
+<button id="tocToggle" type="button" aria-expanded="false"><span>📑 目录 · 已读 <span id="tocPct">0%</span></span><span class="chev">▾</span></button>
+<div class="toc-body">
+<h3>目录 Contents</h3>
+<div><span class="pct" id="pct">0%</span> <small>已读进度</small></div>
+<div style="height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 12px"><div id="pctBar" style="height:100%;width:0%;background:var(--accent2)"></div></div>
+<nav id="tocNav"></nav>
+</div></aside>
+<main id="main"><div class="loading">正在从 data/ 读取章节… Loading chapters from JSON…</div></main>
+</div>
+<footer id="footer"></footer>
+</div>
+<script>
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+let fontSize=16;
+document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-lang]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.body.className=document.body.className.replace(/lang-\w+/,'').trim();document.body.classList.add('lang-'+b.dataset.lang);save('lang',b.dataset.lang)});
+document.getElementById('fontPlus').onclick=()=>{fontSize=Math.min(21,fontSize+1);document.body.style.fontSize=fontSize+'px'};
+document.getElementById('fontMinus').onclick=()=>{fontSize=Math.max(14,fontSize-1);document.body.style.fontSize=fontSize+'px'};
+document.getElementById('themeBtn').onclick=()=>{if(document.body.classList.contains('dark')){document.body.classList.remove('dark');document.body.classList.add('sepia')}else if(document.body.classList.contains('sepia')){document.body.classList.remove('sepia')}else{document.body.classList.add('dark')}};
+function save(k,v){try{localStorage.setItem('fixlife-v2-'+k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem('fixlife-v2-'+k)}catch(e){return null}}
+document.getElementById('tocToggle').onclick=()=>{const t=document.querySelector('.toc');t.classList.toggle('open');document.getElementById('tocToggle').setAttribute('aria-expanded',t.classList.contains('open'))};
+function vocabHTML(v){return '<div class="vword" onclick="this.classList.toggle(\'open\')"><span class="w">'+esc(v.word)+' <i>'+esc(v.phonetic||'')+' · '+esc(v.pos||'')+'</i></span><button class="speak" onclick="event.stopPropagation();speak(\''+esc(v.word).replace(/'/g,'')+'\')">🔊</button><div class="def">'+esc(v.def_zh)+'</div><div class="ex">例：'+esc(v.example_en)+'<br>'+esc(v.example_zh||'')+'</div></div>'}
+function diagramHTML(ch){
+  if(!ch.diagram) return '';
+  const d=ch.diagram; let inner='';
+  if(d.type==='words-actions') inner='<div class="step-list"><div class="step"><b>WORDS 说的话</b> — “我想改变”</div><div class="step" style="text-align:center">≠ 不等于</div><div class="step"><b>ACTIONS 做的事</b> — 刷手机 / 拖延 / 留在原地</div><div class="step"><b>REAL GOAL 真正的目标</b> — 看行动才能看到</div></div>';
+  else if(d.type==='identity-loop') inner='<div class="step-list">'+['① GOAL 目标','② 注意你想看的东西','③ ACT 行动','④ 得到反馈','⑤ HABIT 习惯','⑥ “我就是这种人”','⑦ DEFEND 维护身份 ⚠ 在这里打断循环'].map(s=>'<div class="step">'+esc(s)+'</div>').join('')+'</div>';
+  else if(d.type==='levels') inner='<div>'+ch.levels.map((l,i)=>'<div class="level-bar"><b>'+(9-i)+' · '+esc(l.en)+'</b> — '+esc(l.zh)+'<br><span style="color:var(--muted);font-size:13px">'+esc(l.example)+'</span></div>').join('')+'</div>';
+  else if(d.type==='cybernetics') inner='<div class="step-list">'+['🎯 GOAL 目标','🏃 ACT 行动','👁 SENSE 感知自己在哪','⚖ COMPARE 和目标对比','↻ 再行动，循环下去'].map(s=>'<div class="step">'+esc(s)+'</div>').join('')+'</div>';
+  else if(d.type==='game') inner='<div class="step-list">'+ch.game_parts.map(g=>'<div class="step"><b>'+esc(g.label_zh)+' · '+esc(g.label_en)+'</b><br><span class="en">'+esc(g.en)+'</span><br><span class="zh">'+esc(g.zh)+'</span></div>').join('')+'</div>';
+  return '<div class="diagram">'+inner+'<figcaption>图：'+esc(d.caption_zh)+'</figcaption></div>';
+}
+function chapterHTML(ch){
+  let h='<section class="chapter" id="'+ch.id+'"><div class="num">'+esc(ch.label)+'</div><h2>'+esc(ch.title_zh)+'<span class="en-title">'+esc(ch.title_en)+'</span></h2>';
+  h+='<div class="idea"><b>一句话核心：</b><span class="en">'+esc(ch.core_en)+'</span><span class="zh">'+esc(ch.core_zh)+'</span></div>';
+  ch.paragraphs.forEach(p=>{h+='<div class="para"><p class="en">'+esc(p.en)+'</p><p class="zh">'+esc(p.zh)+'</p></div>'});
+  h+=diagramHTML(ch);
+  if(ch.morning){h+='<div class="exercise"><h4>🌅 上午 · 心理挖掘（15–30 分钟，拿出纸笔）</h4><p class="en">First, look at the pain. Then build the vision. Do not start with the vision — without pain, the vision stays shallow.</p><p class="zh">先看清痛苦，再建立愿景。不要先写愿景 —— 没有痛苦打底，愿景会很浅。</p>';
+    h+='<p><b>① '+esc(ch.morning.anti_vision.title)+'：</b><br>'+ch.morning.anti_vision.items.map(i=>'· '+esc(i)).join('<br>')+'</p>';
+    h+='<p><b>② '+esc(ch.morning.vision.title)+'：</b><br>'+ch.morning.vision.items.map(i=>'· '+esc(i)).join('<br>')+'</p></div>';
+    h+='<div class="exercise"><h4>☀️ 白天 · 打断自动驾驶</h4><p class="en">Journaling alone is not enough. Set alarms through the day. When one rings, stop and ask one question.</p><p class="zh">光写日记不够。白天设几个闹钟，一响就停下来问自己一个问题。</p><div class="alarm-grid">'+ch.alarms.map(a=>'<div class="alarm"><b>'+esc(a.time)+'</b><br><span class="en">'+esc(a.en)+'</span><br><span class="zh">'+esc(a.zh)+'</span></div>').join('')+'</div></div>';
+    h+='<div class="exercise"><h4>🌙 晚上 · 综合洞察，定下目标</h4><p class="en">'+esc(ch.evening.en)+'</p><p class="zh">'+esc(ch.evening.zh)+'</p><p>'+ch.evening.steps.map(s=>'· <b>'+esc(s.label)+'：</b><span class="en">'+esc(s.en)+'</span><span class="zh">'+esc(s.zh)+'</span>').join('<br>')+'</p></div>';
+  }
+  if(ch.tip_en) h+='<div class="quote-card">💡 <b>换个说法练英语：</b><span class="en">'+esc(ch.tip_en)+'</span><span class="zh">'+esc(ch.tip_zh)+'</span></div>';
+  if(ch.vocab) h+='<details class="vocab"'+(ch.num===1?' open':'')+'><summary>🔑 本章重点词 · 点开展开</summary><div class="vocab-list">'+ch.vocab.map(vocabHTML).join('')+'</div></details>';
+  h+='<label class="check"><input type="checkbox" class="done" data-ch="'+ch.id+'"><span><b>我读完了第 '+ch.num+' 章。</b><span class="en"> I finished Chapter '+ch.num+'.</span></span></label></section>';
+  return h;
+}
+async function loadJSON(p){const r=await fetch(p);if(!r.ok)throw new Error(p+' HTTP '+r.status);return r.json()}
+async function init(){
+  try{
+    const meta=await loadJSON('data/meta.json');
+    document.getElementById('lede').textContent=meta.book.subtitle_zh;
+    document.getElementById('chips').innerHTML=meta.book.chips.map(c=>'<span class="chip">'+esc(c)+'</span>').join('');
+    document.getElementById('sourceNote').textContent='作者：'+meta.source.author+'（'+meta.source.handle+'）。'+meta.source.note_zh;
+    document.getElementById('howList').innerHTML=meta.how_to.map((h,i)=>'<p style="margin:6px 0">'+(i+1)+'️⃣ '+esc(h.zh)+'<br><span style="color:var(--muted)">'+esc(h.en)+'</span></p>').join('');
+    document.getElementById('footer').innerHTML='<p>学习指南 · Study guide based on Dan Koe’s X Article (13 Jan 2026). 原文链接：<a href="'+esc(meta.source.url)+'">'+esc(meta.source.url)+'</a><br>本页为概括与学习笔记，不转载原文全文；英文释义与例句为本页原创编写。内容在 data/ JSON 文件中，改 JSON 即可改网页。Pure HTML + CSS + JS, no tracking.<br>Made for English learners · 适合英语学习者阅读</p>';
+    const chapters=[];
+    for(const item of meta.chapters_index){chapters.push(await loadJSON(item.file))}
+    document.getElementById('tocNav').innerHTML=chapters.map(ch=>'<a href="#'+ch.id+'"><span><span class="n">'+String(ch.num).padStart(2,'0')+'</span> '+esc(ch.title_zh)+'</span><span>☐</span></a>').join('')+'<a href="#vocab"><span><span class="n">★</span> 词汇闪卡</span><span>→</span></a><a href="#quiz"><span><span class="n">★</span> 小测验</span><span>→</span></a><a href="#plan"><span><span class="n">★</span> 我的行动手册</span><span>→</span></a>';
+    document.querySelectorAll('.toc a').forEach(a=>a.addEventListener('click',()=>{if(innerWidth<=860)document.querySelector('.toc').classList.remove('open')}));
+    const vocabData=await loadJSON('data/vocab.json');
+    const quizData=await loadJSON('data/quiz.json');
+    let html=chapters.map(chapterHTML).join('');
+    html+='<section class="chapter" id="vocab"><div class="num">Vocabulary Lab · 词汇实验室</div><h2>闪卡：点一点，翻一翻<span class="en-title">Flashcards — tap a card to flip it</span></h2><p style="color:var(--muted)">下面 9 张是高频词，点卡片翻面看中文。全部 28 个词都在各章的词汇表里。</p><div class="flash" id="flash"></div><p><button class="btn" id="shuffleBtn">🔀 洗牌</button> <span style="font-size:13px;color:var(--muted)" id="flashCount"></span></p></section>';
+    html+='<section class="chapter" id="quiz"><div class="num">Check Yourself · 小测验</div><h2>读懂了吗？测 6 道题<span class="en-title">Six quick questions — no score is saved</span></h2><div id="quizBox"></div><p><b>得分：<span id="score">0 / 6</span></b> <button class="btn" onclick="resetQuiz()">再测一次</button></p></section>';
+    html+='<section class="chapter" id="plan"><div class="num">My One-Day Plan · 我的行动手册</div><h2>现在，写下你自己的一天<span class="en-title">Write it here — saved only in your browser</span></h2><p style="color:var(--muted)">不用写得很完美，先写下来。内容只存在你自己的浏览器本地存储里，不会上传。</p><div class="exercise"><h4>1 · 我的反愿景（一句话）</h4><textarea id="p1" placeholder="I refuse to let my life become… / 我绝不让人生变成……"></textarea><h4 style="margin-top:14px">2 · 我的愿景（一句话）</h4><textarea id="p2" placeholder="I am building toward… / 我正在走向……"></textarea><h4 style="margin-top:14px">3 · 新身份：I am the type of person who …</h4><textarea id="p3" placeholder="例如：writes 200 words every morning / 每天早上写 200 词"></textarea><h4 style="margin-top:14px">4 · 明天要做的 2–3 件小事</h4><textarea id="p4" placeholder="1. …&#10;2. …&#10;3. …"></textarea><p><button class="btn primary" id="dlBtn">⬇ 下载我的行动手册 (.txt)</button> <button class="btn" id="clearBtn">清空</button> <span id="savedNote" style="font-size:13px;color:var(--accent2)"></span></p></div><div class="quote-card">📌 <b>下一步：</b>读完这本指南，回到 <a href="'+esc(meta.source.url)+'" target="_blank" rel="noopener">X 原文</a> 再读一遍 —— 这次你会发现很多句子突然变简单了。</div></section>';
+    document.getElementById('main').innerHTML=html;
+    // progress
+    const boxes=[...document.querySelectorAll('.done')];
+    window.updatePct=()=>{const d=boxes.filter(b=>b.checked).length;const p=Math.round(d/boxes.length*100);document.getElementById('pct').textContent=p+'%';document.getElementById('pctBar').style.width=p+'%';const tp=document.getElementById('tocPct');if(tp)tp.textContent=p+'%';save('done',JSON.stringify(boxes.map(b=>b.checked)))};
+    boxes.forEach(b=>b.onchange=updatePct);
+    try{const s=JSON.parse(load('done')||'[]');boxes.forEach((b,i)=>b.checked=!!s[i])}catch(e){}
+    updatePct();
+    // plan
+    ['p1','p2','p3','p4'].forEach(id=>{const el=document.getElementById(id);el.value=load(id)||'';el.addEventListener('input',()=>{save(id,el.value);document.getElementById('savedNote').textContent='已自动保存 ✓'})});
+    document.getElementById('dlBtn').onclick=()=>{const t=['MY ONE-DAY PLAN — 一天重塑人生行动手册','','Anti-vision 反愿景: '+(document.getElementById('p1').value||''),'','Vision 愿景: '+(document.getElementById('p2').value||''),'','New identity 新身份: I am the type of person who '+(document.getElementById('p3').value||''),'','Tomorrow 明天要做: '+(document.getElementById('p4').value||''),'','Source 原文: '+meta.source.url].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='my-one-day-plan.txt';a.click()};
+    document.getElementById('clearBtn').onclick=()=>{['p1','p2','p3','p4'].forEach(id=>{document.getElementById(id).value='';save(id,'')});document.getElementById('savedNote').textContent='已清空'};
+    // flashcards
+    const FLASH=vocabData.flashcards;
+    function renderFlash(list){document.getElementById('flash').innerHTML=list.map(f=>'<div class="card3d" onclick="this.classList.toggle(\'flipped\')"><div class="card3d-in"><div class="face"><b style="font-size:19px">'+esc(f.en)+'</b><span style="font-size:12px;color:var(--muted)">点我翻面 · tap to flip</span></div><div class="face back"><b>'+esc(f.zh)+'</b></div></div></div>').join('');document.getElementById('flashCount').textContent='共 '+list.length+' 张'}
+    renderFlash(FLASH);
+    document.getElementById('shuffleBtn').onclick=()=>renderFlash([...FLASH].sort(()=>Math.random()-.5));
+    // quiz
+    const QUIZ=quizData.questions; let answered={};
+    window.resetQuiz=()=>{answered={};renderQuiz();document.getElementById('score').textContent='0 / '+QUIZ.length};
+    function renderQuiz(){document.getElementById('quizBox').innerHTML=QUIZ.map((item,i)=>'<div class="quiz-q"><b>Q'+(i+1)+'. '+esc(item.q)+'</b>'+item.options.map((o,j)=>'<button onclick="answerQuiz('+i+','+j+',this)">'+esc(o)+'</button>').join('')+'</div>').join('')}
+    window.answerQuiz=(i,j,btn)=>{if(answered[i]!==undefined)return;answered[i]=j;const q=btn.parentElement;[...q.querySelectorAll('button')].forEach((b,k)=>{if(k===QUIZ[i].answer)b.classList.add('correct');else if(k===j)b.classList.add('wrong')});const s=Object.values(answered).filter((v,k)=>v===QUIZ[k].answer).length;document.getElementById('score').textContent=s+' / '+QUIZ.length};
+    renderQuiz();
+    try{const l=load('lang');if(l){document.querySelector('[data-lang="'+l+'"]')?.click()}}catch(e){}
+  }catch(err){
+    document.getElementById('main').innerHTML='<div class="loading">加载 JSON 失败：'+esc(err.message)+'<br>请用本地服务器打开（例如 python3 -m http.server），不要直接用 file:// 打开，因为浏览器会拦截 fetch。</div>';
+  }
+}
+window.addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;document.getElementById('progress').style.width=p+'%'},{passive:true});
+init();
+</script>
+</body>
+</html>
