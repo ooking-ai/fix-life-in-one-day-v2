@@ -98,6 +98,11 @@ footer{color:var(--muted);font-size:13.5px;text-align:center;margin-top:28px}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 #tocToggle{display:none}
 .loading{padding:40px;text-align:center;color:var(--muted)}
+.sent{border-bottom:1px solid var(--line);padding:12px 2px}
+.sent .no{display:inline-block;min-width:34px;font-size:12px;color:var(--muted);font-weight:700}
+.sent .en{font-size:16px}
+.sent .zh{color:#4b5563;font-size:15px;margin-top:3px}body.dark .sent .zh{color:#d1d5db}
+.sent .note{font-size:13px;color:var(--gold);margin-top:4px}
 /* ===== Mobile ===== */
 @media(max-width:860px){
 .topbar-in{padding:8px 12px;gap:8px;flex-wrap:nowrap}
@@ -144,7 +149,8 @@ section.chapter{padding:20px 18px 16px;scroll-margin-top:64px;border-radius:16px
 <p class="lede" id="lede"></p>
 <div class="meta" id="chips"></div>
 <p><a class="btn primary" id="sourceLink" href="https://x.com/thedankoe/status/2010751592346030461" target="_blank" rel="noopener">🔗 去 X 读原文 →</a>
-<button class="btn" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">先看怎么用 ↓</button></p>
+<button class="btn" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">先看怎么用 ↓</button>
+<button class="btn" id="fulltextBtn" onclick="showFulltext()">📖 原文逐句对照 ↓</button></p>
 <p style="font-size:13px;color:var(--muted)" id="sourceNote"></p>
 </div>
 <div class="cover-art" aria-label="概念插图：从旧身份到新身份">
@@ -163,6 +169,10 @@ section.chapter{padding:20px 18px 16px;scroll-margin-top:64px;border-radius:16px
 </div></aside>
 <main id="main"><div class="loading">正在从 data/ 读取章节… Loading chapters from JSON…</div></main>
 </div>
+<section id="fulltext" aria-label="原文逐句对照" style="margin-top:8px">
+<div class="notice" style="margin:0 0 16px"><b>📖 原文逐句对照 · Full text, sentence by sentence</b><br>原文作者：<b>Dan Koe（@thedankoe）</b>，原题 “How to fix your entire life in 1 day”，发表于 2026 年 1 月 13 日。英文原文经作者许可在此转载并翻译，中文翻译仅供学习。出处：<a href="https://x.com/thedankoe/status/2010751592346030461" target="_blank" rel="noopener">x.com/thedankoe/status/2010751592346030461</a><br><span style="color:var(--muted)">Source: Dan Koe, “How to fix your entire life in 1 day” (13 Jan 2026). Republished and translated here with the author's permission, with attribution. Chinese translation is for study only.</span></div>
+<div id="fulltextBody"><div class="loading">点上方“原文逐句对照”加载全文…</div></div>
+</section>
 <footer id="footer"></footer>
 </div>
 <script>
@@ -211,7 +221,7 @@ async function init(){
     document.getElementById('chips').innerHTML=meta.book.chips.map(c=>'<span class="chip">'+esc(c)+'</span>').join('');
     document.getElementById('sourceNote').textContent='作者：'+meta.source.author+'（'+meta.source.handle+'）。'+meta.source.note_zh;
     document.getElementById('howList').innerHTML=meta.how_to.map((h,i)=>'<p style="margin:6px 0">'+(i+1)+'️⃣ '+esc(h.zh)+'<br><span style="color:var(--muted)">'+esc(h.en)+'</span></p>').join('');
-    document.getElementById('footer').innerHTML='<p>学习指南 · Study guide based on Dan Koe’s X Article (13 Jan 2026). 原文链接：<a href="'+esc(meta.source.url)+'">'+esc(meta.source.url)+'</a><br>本页为概括与学习笔记，不转载原文全文；英文释义与例句为本页原创编写。内容在 data/ JSON 文件中，改 JSON 即可改网页。Pure HTML + CSS + JS, no tracking.<br>Made for English learners · 适合英语学习者阅读</p>';
+    document.getElementById('footer').innerHTML='<p>学习指南 · Study guide based on Dan Koe’s X Article (13 Jan 2026). 原文链接：<a href="'+esc(meta.source.url)+'">'+esc(meta.source.url)+'</a><br>上方精读版为概括与学习笔记；下方“原文逐句对照”为 Dan Koe 原文全文及中文翻译，经作者许可转载，注明出处，翻译仅供学习。内容在 data/ JSON 文件中，改 JSON 即可改网页。Pure HTML + CSS + JS, no tracking.<br>Made for English learners · 适合英语学习者阅读</p>';
     const chapters=[];
     for(const item of meta.chapters_index){chapters.push(await loadJSON(item.file))}
     document.getElementById('tocNav').innerHTML=chapters.map(ch=>'<a href="#'+ch.id+'"><span><span class="n">'+String(ch.num).padStart(2,'0')+'</span> '+esc(ch.title_zh)+'</span><span>☐</span></a>').join('')+'<a href="#vocab"><span><span class="n">★</span> 词汇闪卡</span><span>→</span></a><a href="#quiz"><span><span class="n">★</span> 小测验</span><span>→</span></a><a href="#plan"><span><span class="n">★</span> 我的行动手册</span><span>→</span></a>';
@@ -250,6 +260,26 @@ async function init(){
   }
 }
 window.addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;document.getElementById('progress').style.width=p+'%'},{passive:true});
+let fullLoaded=false;
+async function showFulltext(){
+  document.getElementById('fulltext').scrollIntoView({behavior:'smooth'});
+  if(fullLoaded) return; fullLoaded=true;
+  const box=document.getElementById('fulltextBody'); box.innerHTML='<div class="loading">正在加载全文 347 句…</div>';
+  try{
+    const idx=await (await fetch('data/fulltext/index.json')).json();
+    let html='',n=0;
+    for(const f of idx.files){
+      const d=await (await fetch('data/fulltext/'+f.file)).json();
+      html+='<section class="chapter"><h2>'+esc(d.title_en)+'<span class="zh">'+esc(d.title_zh)+'</span></h2>';
+      for(const s of d.sentences){ n++;
+        html+='<div class="sent"><span class="no">'+n+'</span><div class="en">'+esc(s.en)+'</div><div class="zh">'+esc(s.zh)+'</div>'+(s.note?'<div class="note">💡 '+esc(s.note)+'</div>':'')+'</div>';
+      }
+      if(d.vocab&&d.vocab.length){ html+='<h3>本节生词 · Vocab</h3><div class="vocab">'+d.vocab.map(v=>'<span class="chip"><b>'+esc(v.word)+'</b> '+esc(v.phonetic||'')+' · '+esc(v.def_zh)+'</span>').join('')+'</div>'; }
+      html+='</section>';
+    }
+    box.innerHTML=html;
+  }catch(e){ box.innerHTML='<div class="loading">加载失败：全文需要通过 HTTP 打开（如 GitHub Pages 或本地 python3 -m http.server），不能直接用 file:// 打开。</div>'; }
+}
 init();
 </script>
 </body>
