@@ -103,6 +103,16 @@ footer{color:var(--muted);font-size:13.5px;text-align:center;margin-top:28px}
 .sent .en{font-size:16px}
 .sent .zh{color:#4b5563;font-size:15px;margin-top:3px}body.dark .sent .zh{color:#d1d5db}
 .sent .note{font-size:13px;color:var(--gold);margin-top:4px}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal[hidden]{display:none}
+.modal-card{background:var(--card);border-radius:16px;max-width:860px;width:100%;height:85vh;height:85dvh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.modal-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+.modal-head .btn{white-space:nowrap;flex-shrink:0}
+.modal-head b{font-size:17px}
+.modal-sub{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.5}
+.modal-body{flex:1;overflow-y:auto;padding:6px 20px 16px;-webkit-overflow-scrolling:touch}
+.modal-foot{display:flex;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+@media (max-width:640px){.modal{padding:0}.modal-card{max-width:none;width:100%;height:100vh;height:100dvh;border-radius:0}.modal-head{padding-top:max(14px,env(safe-area-inset-top))}.modal-foot{padding-bottom:max(12px,env(safe-area-inset-bottom))}}
 /* ===== Mobile ===== */
 @media(max-width:860px){
 .topbar-in{padding:8px 12px;gap:8px;flex-wrap:nowrap}
@@ -150,7 +160,7 @@ section.chapter{padding:20px 18px 16px;scroll-margin-top:64px;border-radius:16px
 <div class="meta" id="chips"></div>
 <p><a class="btn primary" id="sourceLink" href="https://x.com/thedankoe/status/2010751592346030461" target="_blank" rel="noopener">🔗 去 X 读原文 →</a>
 <button class="btn" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">先看怎么用 ↓</button>
-<button class="btn" id="fulltextBtn" onclick="showFulltext()">📖 原文逐句对照 ↓</button></p>
+<button class="btn" id="fulltextBtn" onclick="openFulltext('intro')">📖 引言原文逐句对照</button></p>
 <p style="font-size:13px;color:var(--muted)" id="sourceNote"></p>
 </div>
 <div class="cover-art" aria-label="概念插图：从旧身份到新身份">
@@ -169,10 +179,13 @@ section.chapter{padding:20px 18px 16px;scroll-margin-top:64px;border-radius:16px
 </div></aside>
 <main id="main"><div class="loading">正在从 data/ 读取章节… Loading chapters from JSON…</div></main>
 </div>
-<section id="fulltext" aria-label="原文逐句对照" style="margin-top:8px">
-<div class="notice" style="margin:0 0 16px"><b>📖 原文逐句对照 · Full text, sentence by sentence</b><br>原文作者：<b>Dan Koe（@thedankoe）</b>，原题 “How to fix your entire life in 1 day”，发表于 2026 年 1 月 13 日。英文原文经作者许可在此转载并翻译，中文翻译仅供学习。出处：<a href="https://x.com/thedankoe/status/2010751592346030461" target="_blank" rel="noopener">x.com/thedankoe/status/2010751592346030461</a><br><span style="color:var(--muted)">Source: Dan Koe, “How to fix your entire life in 1 day” (13 Jan 2026). Republished and translated here with the author's permission, with attribution. Chinese translation is for study only.</span></div>
-<div id="fulltextBody"><div class="loading">点上方“原文逐句对照”加载全文…</div></div>
-</section>
+<div id="ftModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="ftTitle">
+<div class="modal-card">
+<div class="modal-head"><div><b id="ftTitle">📖 原文逐句对照</b><div class="modal-sub">原文作者：Dan Koe（@thedankoe）· “How to fix your entire life in 1 day” · 2026-01-13 · 经作者许可转载并翻译，注明出处 · <a href="https://x.com/thedankoe/status/2010751592346030461" target="_blank" rel="noopener">原文链接</a></div></div><button class="btn" id="ftClose" onclick="closeFulltext()" aria-label="关闭">✕ 关闭</button></div>
+<div class="modal-body" id="ftBody"><div class="loading">加载中…</div></div>
+<div class="modal-foot"><button class="btn primary" onclick="closeFulltext()">关闭</button><span style="font-size:13px;color:var(--muted)">中文翻译仅供学习 · Chinese translation is for study only</span></div>
+</div>
+</div>
 <footer id="footer"></footer>
 </div>
 <script>
@@ -210,6 +223,7 @@ function chapterHTML(ch){
   }
   if(ch.tip_en) h+='<div class="quote-card">💡 <b>换个说法练英语：</b><span class="en">'+esc(ch.tip_en)+'</span><span class="zh">'+esc(ch.tip_zh)+'</span></div>';
   if(ch.vocab) h+='<details class="vocab"'+(ch.num===1?' open':'')+'><summary>🔑 本章重点词 · 点开展开</summary><div class="vocab-list">'+ch.vocab.map(vocabHTML).join('')+'</div></details>';
+  h+='<p><button class="btn" onclick="openFulltext(\''+ch.id+'\')">📖 本章原文逐句对照</button></p>';
   h+='<label class="check"><input type="checkbox" class="done" data-ch="'+ch.id+'"><span><b>我读完了第 '+ch.num+' 章。</b><span class="en"> I finished Chapter '+ch.num+'.</span></span></label></section>';
   return h;
 }
@@ -221,7 +235,7 @@ async function init(){
     document.getElementById('chips').innerHTML=meta.book.chips.map(c=>'<span class="chip">'+esc(c)+'</span>').join('');
     document.getElementById('sourceNote').textContent='作者：'+meta.source.author+'（'+meta.source.handle+'）。'+meta.source.note_zh;
     document.getElementById('howList').innerHTML=meta.how_to.map((h,i)=>'<p style="margin:6px 0">'+(i+1)+'️⃣ '+esc(h.zh)+'<br><span style="color:var(--muted)">'+esc(h.en)+'</span></p>').join('');
-    document.getElementById('footer').innerHTML='<p>学习指南 · Study guide based on Dan Koe’s X Article (13 Jan 2026). 原文链接：<a href="'+esc(meta.source.url)+'">'+esc(meta.source.url)+'</a><br>上方精读版为概括与学习笔记；下方“原文逐句对照”为 Dan Koe 原文全文及中文翻译，经作者许可转载，注明出处，翻译仅供学习。内容在 data/ JSON 文件中，改 JSON 即可改网页。Pure HTML + CSS + JS, no tracking.<br>Made for English learners · 适合英语学习者阅读</p>';
+    document.getElementById('footer').innerHTML='<p>学习指南 · Study guide based on Dan Koe’s X Article (13 Jan 2026). 原文链接：<a href="'+esc(meta.source.url)+'">'+esc(meta.source.url)+'</a><br>上方精读版为概括与学习笔记；每章末尾的“原文逐句对照”弹窗为 Dan Koe 原文该节全文及中文翻译，经作者许可转载，注明出处，翻译仅供学习。内容在 data/ JSON 文件中，改 JSON 即可改网页。Pure HTML + CSS + JS, no tracking.<br>Made for English learners · 适合英语学习者阅读</p>';
     const chapters=[];
     for(const item of meta.chapters_index){chapters.push(await loadJSON(item.file))}
     document.getElementById('tocNav').innerHTML=chapters.map(ch=>'<a href="#'+ch.id+'"><span><span class="n">'+String(ch.num).padStart(2,'0')+'</span> '+esc(ch.title_zh)+'</span><span>☐</span></a>').join('')+'<a href="#vocab"><span><span class="n">★</span> 词汇闪卡</span><span>→</span></a><a href="#quiz"><span><span class="n">★</span> 小测验</span><span>→</span></a><a href="#plan"><span><span class="n">★</span> 我的行动手册</span><span>→</span></a>';
@@ -260,26 +274,25 @@ async function init(){
   }
 }
 window.addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;document.getElementById('progress').style.width=p+'%'},{passive:true});
-let fullLoaded=false;
-async function showFulltext(){
-  document.getElementById('fulltext').scrollIntoView({behavior:'smooth'});
-  if(fullLoaded) return; fullLoaded=true;
-  const box=document.getElementById('fulltextBody'); box.innerHTML='<div class="loading">正在加载全文 347 句…</div>';
+const ftCache={};
+function closeFulltext(){ document.getElementById('ftModal').hidden=true; document.body.style.overflow=''; }
+async function openFulltext(id){
+  const m=document.getElementById('ftModal'), box=document.getElementById('ftBody');
+  m.hidden=false; document.body.style.overflow='hidden';
+  box.innerHTML='<div class="loading">正在加载本节原文…</div>';
   try{
-    const idx=await (await fetch('data/fulltext/index.json')).json();
-    let html='',n=0;
-    for(const f of idx.files){
-      const d=await (await fetch('data/fulltext/'+f.file)).json();
-      html+='<section class="chapter"><h2>'+esc(d.title_en)+'<span class="zh">'+esc(d.title_zh)+'</span></h2>';
-      for(const s of d.sentences){ n++;
-        html+='<div class="sent"><span class="no">'+n+'</span><div class="en">'+esc(s.en)+'</div><div class="zh">'+esc(s.zh)+'</div>'+(s.note?'<div class="note">💡 '+esc(s.note)+'</div>':'')+'</div>';
-      }
-      if(d.vocab&&d.vocab.length){ html+='<h3>本节生词 · Vocab</h3><div class="vocab">'+d.vocab.map(v=>'<span class="chip"><b>'+esc(v.word)+'</b> '+esc(v.phonetic||'')+' · '+esc(v.def_zh)+'</span>').join('')+'</div>'; }
-      html+='</section>';
-    }
-    box.innerHTML=html;
+    const d=ftCache[id]||(ftCache[id]=await (await fetch('data/fulltext/'+id+'.json')).json());
+    document.getElementById('ftTitle').textContent='📖 '+d.title_zh+' · 原文逐句对照';
+    let html='<h2 style="margin:12px 0 4px">'+esc(d.title_en)+'</h2><p style="color:var(--muted);font-size:13px;margin:0 0 8px">共 '+d.sentences.length+' 句 · 英文逐字保留原文 · 中文逐句翻译</p>';
+    d.sentences.forEach((s,i)=>{
+      html+='<div class="sent"><span class="no">'+(i+1)+'</span><div class="en">'+esc(s.en)+'</div><div class="zh">'+esc(s.zh)+'</div>'+(s.note?'<div class="note">💡 '+esc(s.note)+'</div>':'')+'</div>';
+    });
+    if(d.vocab&&d.vocab.length){ html+='<h3>本节生词 · Vocab</h3><div class="vocab">'+d.vocab.map(v=>'<span class="chip"><b>'+esc(v.word)+'</b> '+esc(v.phonetic||'')+' · '+esc(v.def_zh)+'</span>').join('')+'</div>'; }
+    box.innerHTML=html; box.scrollTop=0;
   }catch(e){ box.innerHTML='<div class="loading">加载失败：全文需要通过 HTTP 打开（如 GitHub Pages 或本地 python3 -m http.server），不能直接用 file:// 打开。</div>'; }
 }
+document.getElementById('ftModal').addEventListener('click',e=>{if(e.target.id==='ftModal')closeFulltext()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('ftModal').hidden)closeFulltext()});
 init();
 </script>
 </body>

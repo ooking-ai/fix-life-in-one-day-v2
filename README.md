@@ -62,4 +62,4 @@ GitHub Pages：仓库 Settings → Pages → Deploy from branch → `main` / `/ 
 - `data/fulltext/`：原文全文逐句对照，共 347 句，分 `intro.json` + `ch01–ch07.json`，另有 `index.json`（文件清单 + 出处信息）。
 - 每句格式：`{"en": "原文句子（逐字保留）", "zh": "中文翻译", "note": "可选：疑难说明"}`，另有每节生词 `vocab`。
 - 出处与许可：原文作者 Dan Koe（@thedankoe），原题 “How to fix your entire life in 1 day”，2026-01-13，原文链接 https://x.com/thedankoe/status/2010751592346030461 。全文及翻译经作者许可在此转载，唯一条件是注明出处；作者的回复原文不放在网页上。网页顶部与全文区都有醒目的出处说明。
-- 网页 `index.html` 中点「📖 原文逐句对照」按钮按需加载 `data/fulltext/` 渲染；精读版仍为默认视图。
+- 网页 `index.html` 中每章精读版末尾有「📖 本章原文逐句对照」按钮，点开弹窗按需加载 `data/fulltext/<章>.json` 渲染该节全文；手机上弹窗为全屏，点 ✕ 关闭、点遮罩或按 Esc 也可关闭。首页按钮打开引言弹窗。精读版仍为默认视图。
