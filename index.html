@@ -99,10 +99,14 @@ footer{color:var(--muted);font-size:13.5px;text-align:center;margin-top:28px}
 #tocToggle{display:none}
 .loading{padding:40px;text-align:center;color:var(--muted)}
 .sent{border-bottom:1px solid var(--line);padding:12px 2px}
-.sent .no{display:inline-block;min-width:34px;font-size:12px;color:var(--muted);font-weight:700}
-.sent .en{font-size:16px}
-.sent .zh{color:#4b5563;font-size:15px;margin-top:3px}body.dark .sent .zh{color:#d1d5db}
+.sent .no{display:inline;color:var(--accent2);font-size:14px;font-weight:700;margin-right:8px}
+.sent .en{display:inline;font-size:16px;line-height:1.6}
+.sent .zh{color:#4b5563;font-size:15px;margin-top:4px;line-height:1.6}body.dark .sent .zh{color:#d1d5db}
 .sent .note{font-size:13px;color:var(--gold);margin-top:4px}
+.ft-vocab{display:grid;gap:8px;margin:10px 0 4px}
+.ft-vocab-item{border:1px solid var(--line);border-radius:10px;padding:10px 12px;line-height:1.55}
+.ft-vocab-item b{font-size:16px}
+.ft-vocab-item .ph{color:var(--muted);font-size:14px}
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal[hidden]{display:none}
 .modal-card{background:var(--card);border-radius:16px;max-width:860px;width:100%;height:85vh;height:85dvh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
@@ -181,9 +185,8 @@ section.chapter{padding:20px 18px 16px;scroll-margin-top:64px;border-radius:16px
 </div>
 <div id="ftModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="ftTitle">
 <div class="modal-card">
-<div class="modal-head"><div><b id="ftTitle">📖 原文逐句对照</b><div class="modal-sub">原文作者：Dan Koe（@thedankoe）· “How to fix your entire life in 1 day” · 2026-01-13 · 经作者许可转载并翻译，注明出处 · <a href="https://x.com/thedankoe/status/2010751592346030461" target="_blank" rel="noopener">原文链接</a></div></div><button class="btn" id="ftClose" onclick="closeFulltext()" aria-label="关闭">✕ 关闭</button></div>
+<div class="modal-head"><div><b id="ftTitle">📖 原文逐句对照</b></div><button class="btn" id="ftClose" onclick="closeFulltext()" aria-label="关闭">✕ 关闭</button></div>
 <div class="modal-body" id="ftBody"><div class="loading">加载中…</div></div>
-<div class="modal-foot"><button class="btn primary" onclick="closeFulltext()">关闭</button><span style="font-size:13px;color:var(--muted)">中文翻译仅供学习 · Chinese translation is for study only</span></div>
 </div>
 </div>
 <footer id="footer"></footer>
@@ -287,7 +290,7 @@ async function openFulltext(id){
     d.sentences.forEach((s,i)=>{
       html+='<div class="sent"><span class="no">'+(i+1)+'</span><div class="en">'+esc(s.en)+'</div><div class="zh">'+esc(s.zh)+'</div>'+(s.note?'<div class="note">💡 '+esc(s.note)+'</div>':'')+'</div>';
     });
-    if(d.vocab&&d.vocab.length){ html+='<h3>本节生词 · Vocab</h3><div class="vocab">'+d.vocab.map(v=>'<span class="chip"><b>'+esc(v.word)+'</b> '+esc(v.phonetic||'')+' · '+esc(v.def_zh)+'</span>').join('')+'</div>'; }
+    if(d.vocab&&d.vocab.length){ html+='<h3>本节生词 · Vocab</h3><div class="ft-vocab">'+d.vocab.map(v=>'<div class="ft-vocab-item"><b>'+esc(v.word)+'</b> <span class="ph">'+esc(v.phonetic||'')+'</span><br>'+esc(v.def_zh)+'</div>').join('')+'</div>'; }
     box.innerHTML=html; box.scrollTop=0;
   }catch(e){ box.innerHTML='<div class="loading">加载失败：全文需要通过 HTTP 打开（如 GitHub Pages 或本地 python3 -m http.server），不能直接用 file:// 打开。</div>'; }
 }
